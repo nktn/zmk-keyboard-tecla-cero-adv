@@ -4,11 +4,29 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: sekigon-gonnoc
       url-base: https://github.com/sekigon-gonnoc
+    - name: cormoran
+      url-base: https://github.com/cormoran
+    - name: nktn
+      url-base: https://github.com/nktn
   projects:
+    # dya studio (cormoran のランタイム入力プロセッサ Web UI) の独自 Studio RPC を
+    # 使うため、本体 ZMK を cormoran フォーク(v0.3 + custom-studio-protocol)に切替。
+    # ※このブランチ限定。main は upstream zmkfirmware/zmk@v0.3 のまま。
+    # 再現性・改ざん検知のためブランチ名でなく固定SHAで取得する。
+    #   = cormoran/zmk refs/heads/v0.3+custom-studio-protocol の先頭(2026-06-14時点)。
+    #   フォークの更新を取り込むときはこのSHAを手動で上げる。
     - name: zmk
-      remote: zmkfirmware
-      revision: v0.3
+      remote: cormoran
+      revision: 35bb5dafecd5931c432c74e1b630cf12097671e4
       import: app/west.yml
+    # ランタイム入力プロセッサ本体（nktn フォーク）
+    # ※ upstream は v0.3対応タグ zmk-v0.3.0.0 を使うが、変更通知に id を載せ
+    #   忘れるバグ(編集すると id=0 のプロセッサが上書きされ「left を編集すると
+    #   right が left になる」)があるため、それを修正したフォークに固定。
+    #   fix-notify-id ブランチの固定 SHA（タグ tip 更新時の取り違え防止）。
+    - name: zmk-module-runtime-input-processor
+      remote: nktn
+      revision: 80bb24984eda41b796d080df16f6f7c084aed04d
     - name: zmk-component-bmp-boost
       remote: sekigon-gonnoc
       import: west.yml

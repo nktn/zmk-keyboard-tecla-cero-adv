@@ -13,20 +13,36 @@
         };
     };
 
+    // dya studio: 左トラックボール用ランタイムプロセッサ（central 専用）
+    // Web UI ラベル "left"。xy-to-scroll-enabled のトグルでカーソル⇔スクロールを
+    // 実機切替（焼き直し不要・永続保存）。初期はスクロール（xy-to-scroll 有効）。
+    // 生の REL_X/REL_Y を受け、有効時は X→HWHEEL / Y→WHEEL に内部変換する。
+    // axis-snap-mode=2(Y) で縦スクロール優先（旧 zip_x_scaler 相当。横は閾値超えで解放）。
+    ball_left: ball_left {
+        compatible = "zmk,input-processor-runtime";
+        processor-label = "left";
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_X>;
+        y-codes = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <24>;         // スクロール初期=1/24（カーソル化時は要調整）
+        rotation-degrees = <0>;
+        xy-to-scroll-enabled;         // 初期=スクロール
+        axis-snap-mode = <2>;         // 2=Y軸固定（縦スクロール優先）
+        track-remainders;
+        #input-processor-cells = <0>;
+    };
+
     /*
      * 左トラックボール（split 経由）のリスナー
-     * 左側は縦スクロール専用（横方向は無効）
-     * - zip_x_scaler 0 1 で X 軸を 0 倍にして横移動を除去
-     * - zip_xy_to_scroll_mapper で残った Y 軸を縦ホイールに変換
-     * - zip_scroll_scaler 1 24 でスクロール量を 1/24 に減速
+     * ball_left 1基に集約。カーソル/スクロールの切替・縦固定・速度はすべて
+     * dya studio から ball_left("left") を操作して実機調整する。
      */
     pointing_device_split_listener: pointing_device_split_listener {
         compatible = "zmk,input-listener";
         device = <&pointing_device_split>;
         status = "okay";
         input-processors = <&typing_suppress>,
-                           <&zip_x_scaler 0 1>,
-                           <&zip_xy_to_scroll_mapper>,
-                           <&zip_scroll_scaler 1 24>;
+                           <&ball_left>;
     };
 };

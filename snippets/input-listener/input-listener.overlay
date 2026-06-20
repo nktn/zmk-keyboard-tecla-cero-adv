@@ -1,4 +1,72 @@
+#include <dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    // dya studio: 右トラックボール用ランタイムプロセッサ（central 専用）
+    // Web UI ラベル "right"。xy-to-scroll-enabled のトグルでカーソル⇔スクロールを
+    // 実機切替（焼き直し不要・永続保存）。初期はカーソル（xy-to-scroll 無効）。
+    // X/Y 反転は旧 zip_xy_transform 相当を内蔵 invert で実現（実機で反転トグル可）。
+    ball_right: ball_right {
+        compatible = "zmk,input-processor-runtime";
+        processor-label = "right";
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_X>;
+        y-codes = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <1>;          // カーソル初期=等倍（スクロール化時は要調整）
+        rotation-degrees = <0>;
+        x-invert;                     // 旧 zip_xy_transform(X_INVERT) 相当
+        y-invert;                     // 旧 zip_xy_transform(Y_INVERT) 相当
+        track-remainders;
+        #input-processor-cells = <0>;
+    };
+
+    // dya studio: キー(タクトスイッチ等)からの &mmv カーソル移動の速度調整
+    // （Web UI は processor-label="kmouse" で自動検出）
+    key_mouse_rip: key_mouse_rip {
+        compatible = "zmk,input-processor-runtime";
+        processor-label = "kmouse";
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_X>;
+        y-codes = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <1>;          // 初期等倍（Web UI で調整）
+        rotation-degrees = <0>;
+        track-remainders;
+        #input-processor-cells = <0>;
+    };
+
+    // dya studio: キー(タクトスイッチ等)からの &msc スクロールの速度調整
+    // （Web UI は processor-label="kscroll" で自動検出）
+    key_scroll_rip: key_scroll_rip {
+        compatible = "zmk,input-processor-runtime";
+        processor-label = "kscroll";
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_HWHEEL>;
+        y-codes = <INPUT_REL_WHEEL>;
+        scale-multiplier = <1>;
+        scale-divisor = <1>;          // 初期等倍（Web UI で調整）
+        rotation-degrees = <0>;
+        track-remainders;
+        #input-processor-cells = <0>;
+    };
+};
+
+// キーマップの &mmv / &msc が発行するイベントは central の専用リスナー
+// (mmv_input_listener / msc_input_listener) を通るため、ここに
+// ランタイムプロセッサを挟んでタクトスイッチ等の移動量も実機調整可能にする
+&mmv_input_listener {
+    input-processors = <&key_mouse_rip>;
+};
+
+&msc_input_listener {
+    input-processors = <&key_scroll_rip>;
+};
+
 &pointing_listener {
     status = "okay";
     device = <&pointing_device>;
+    // ball_right 1基に集約。反転もスクロール化も ball_right 内で実機切替する
+    input-processors = <&typing_suppress>,
+                       <&ball_right>;
 };

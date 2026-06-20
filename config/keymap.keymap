@@ -4,10 +4,6 @@
  * 48キー分割キーボード（左24 + 右24）
  * 3レイヤー構成
  *
- * 物理構成:
- *   ROW0-2 = アルファ3段、ROW3 = サム行（各側COL2欠番＝8キー）
- *   ROW4   = 5方向タクト + マウス/トラックボール操作行（ハード配線依存・変更不可）
- *
  * ZMK Studioでリアルタイム編集可能
  */
 
@@ -16,10 +12,93 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 
 / {
+    /*
+     * dya studio (ZMK Studio) 割当用マクロ
+     *
+     * &mmv / &msc は Studio 用のパラメータメタデータが ZMK 本体に無く、
+     * Studio UI からは引数付きで直接割当できない。引数なしマクロに
+     * ラップしておくことで、タクトスイッチ等へ Studio から割当可能になる。
+     * 長押しで連続動作するよう press / pause / release 構成。
+     * 速度は dya studio のランタイムプロセッサ (key-mouse / key-scroll) で調整。
+     */
+
+    macros {
+        scroll_up: scroll_up {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Scroll Up";
+            bindings = <&macro_press &msc SCRL_UP>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &msc SCRL_UP>;
+        };
+
+        scroll_down: scroll_down {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Scroll Down";
+            bindings = <&macro_press &msc SCRL_DOWN>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &msc SCRL_DOWN>;
+        };
+
+        scroll_left: scroll_left {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Scroll Left";
+            bindings = <&macro_press &msc SCRL_LEFT>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &msc SCRL_LEFT>;
+        };
+
+        scroll_right: scroll_right {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Scroll Right";
+            bindings = <&macro_press &msc SCRL_RIGHT>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &msc SCRL_RIGHT>;
+        };
+
+        mouse_up: mouse_up {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Mouse Up";
+            bindings = <&macro_press &mmv MOVE_UP>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &mmv MOVE_UP>;
+        };
+
+        mouse_down: mouse_down {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Mouse Down";
+            bindings = <&macro_press &mmv MOVE_DOWN>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &mmv MOVE_DOWN>;
+        };
+
+        mouse_left: mouse_left {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Mouse Left";
+            bindings = <&macro_press &mmv MOVE_LEFT>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &mmv MOVE_LEFT>;
+        };
+
+        mouse_right: mouse_right {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "Mouse Right";
+            bindings = <&macro_press &mmv MOVE_RIGHT>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &mmv MOVE_RIGHT>;
+        };
+    };
+
     /*
      * コンボ設定
      * 複数キー同時押しで特殊動作
@@ -34,6 +113,14 @@
             bindings = <&bt BT_CLR>;
             key-positions = <28 29>;
             layers = <2>;
+        };
+
+        // Layer 0 で G(14) + H(15) 同時押し → ZMK Studio 解錠
+        // （CONFIG_ZMK_STUDIO_LOCKING=y のとき、キーマップ編集前にこれで解錠）
+        studio_unlock_combo {
+            bindings = <&studio_unlock>;
+            key-positions = <14 15>;
+            layers = <0>;
         };
     };
 
@@ -50,21 +137,24 @@
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
          * │ Z │ X │ C │ V │ B │   │ N │ M │ , │ . │ / │
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │Ctl│GUI│   │Alt│SPC│   │ENT│Sft│   │BSP│Ctl│
+         * │Alt│   │   │L1 │ENT│   │Sft│   │   │L2 │C⌫ │
          * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
-         *                   L1            L2
-         * SPC: 長押しでLayer1 / ENT: 長押しでLayer2
          *
-         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
+         * サム行(各側3キー):
+         *   L1 = lt 1 MINUS（長押しLayer1 / タップ -）
+         *   ENT = mt LEFT_GUI ENTER（長押しGUI / タップEnter）
+         *   Sft = mt RIGHT_SHIFT CAPS（長押しShift / タップCaps）
+         *   L2 = lt 2 SPACE（長押しLayer2 / タップSpace）
+         *   C⌫ = mt RCTRL BSPC（長押しCtrl / タップBackspace）
          */
 
         layer_0 {
             bindings = <
-&kp Q         &kp W      &kp E      &kp R         &kp T            &kp Y         &kp U          &kp I         &kp O          &kp P
-&kp A         &kp S      &kp D      &kp F         &kp G            &kp H         &kp J          &kp K         &kp L          &kp SEMICOLON
-&kp Z         &kp X      &kp C      &kp V         &kp B            &kp N         &kp M          &kp COMMA     &kp DOT        &kp SLASH
-&kp LCTRL     &kp LGUI              &kp LALT      &lt 1 SPACE      &lt 2 ENTER   &kp RSHIFT                   &kp BSPC       &kp RCTRL
-&mkp LCLK     &mkp RCLK  &kp DOWN   &kp LC(UP)    &kp ENTER        &mkp MCLK     &mkp LCLK      &kp LC(LEFT)  &kp LC(RIGHT)  &msc SCRL_DOWN
+&kp Q         &kp W      &kp E  &kp R        &kp T               &kp Y                 &kp U        &kp I      &kp O      &kp P
+&kp A         &kp S      &kp D  &kp F        &kp G               &kp H                 &kp J        &kp K      &kp L      &kp SEMICOLON
+&kp Z         &kp X      &kp C  &kp V        &kp B               &kp N                 &kp M        &kp COMMA  &kp DOT    &kp SLASH
+&kp LEFT_ALT            &lt 1 MINUS  &mt LEFT_GUI ENTER  &mt RIGHT_SHIFT CAPS  &lt 2 SPACE                        &mt RCTRL BSPC
+&mkp LCLK     &mkp RCLK &kp DOWN   &kp LC(UP)    &kp ENTER     &mkp MCLK             &mkp LCLK      &kp LC(LEFT) &kp LC(RIGHT) &msc SCRL_DOWN
             >;
         };
 
@@ -74,23 +164,22 @@
          * ┌───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┐
          * │ 1 │ 2 │ 3 │ 4 │ 5 │   │ 6 │ 7 │ 8 │ 9 │ 0 │
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │TAB│ ← │ ↓ │ ↑ │ → │   │Hom│PgD│PgU│End│DEL│
+         * │TAB│   │   │   │   │   │ ← │ ↓ │ ↑ │ → │BSP│
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │ESC│   │   │   │   │   │   │   │   │   │BSP│
+         * │SFT│   │   │   │   │   │   │   │   │   │DEL│
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
          * │   │   │   │▓▓▓│   │   │   │   │   │   │   │
          * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
          *
-         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
          */
 
         layer_1 {
             bindings = <
-&kp N1        &kp N2     &kp N3     &kp N4        &kp N5           &kp N6        &kp N7         &kp N8        &kp N9         &kp N0
-&kp TAB       &kp LEFT   &kp DOWN   &kp UP        &kp RIGHT        &kp HOME      &kp PG_DN      &kp PG_UP     &kp END        &kp DEL
-&kp ESC       &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &kp BSPC
-&trans        &trans                &trans        &trans           &trans        &trans                       &trans         &trans
-&trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
+&kp N1      &kp N2    &kp N3    &kp N4        &kp N5     &kp N6     &kp N7     &kp N8     &kp N9           &kp N0
+&kp TAB     &kp LEFT  &kp DOWN  &kp UP_ARROW  &kp RIGHT  &mkp MCLK  &mkp LCLK  &mkp RCLK  &kp RIGHT_SHIFT  &kp COLON
+&kp ESCAPE  &trans    &trans    &trans        &trans     &trans     &trans     &trans     &trans           &kp DEL
+&trans                  &trans        &trans     &trans     &trans                           &trans
+&trans      &trans    &trans    &trans        &trans     &trans     &trans     &trans     &trans           &trans
             >;
         };
 
@@ -104,20 +193,20 @@
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
          * │F6 │F7 │F8 │F9 │F10│   │ _ │ + │ { │ } │ | │
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │BT0│BT1│   │BT2│CLR│   │OUT│   │   │   │   │
+         * │BT │OUT│   │   │   │   │   │▓▓▓│   │   │   │
          * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
          *
-         * BT0-2: BTプロファイル選択 / CLR: 現プロファイル解除 / OUT: USB/BLE切替
-         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
+         * BT: 次のBTプロファイルへ切替
+         * OUT: USB/BLE出力切替
          */
 
         layer_2 {
             bindings = <
-&kp EXCL      &kp AT     &kp HASH   &kp DLLR      &kp PRCNT        &kp CARET     &kp AMPS       &kp ASTRK     &kp LPAR       &kp RPAR
-&kp F1        &kp F2     &kp F3     &kp F4        &kp F5           &kp MINUS     &kp EQUAL      &kp LBKT      &kp RBKT       &kp BSLH
-&kp F6        &kp F7     &kp F8     &kp F9        &kp F10          &kp UNDER     &kp PLUS       &kp LBRC      &kp RBRC       &kp PIPE
-&bt BT_SEL 0  &bt BT_SEL 1          &bt BT_SEL 2  &bt BT_CLR       &out OUT_TOG  &trans                       &trans         &trans
-&trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
+&kp EXCL      &kp AT        &kp HASH  &kp DLLR      &kp PRCNT       &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR       &kp RPAR
+&kp LS(TAB)   &trans        &trans    &trans        &trans          &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT       &kp SEMICOLON
+&kp ESCAPE    &trans        &trans    &trans        &bt BT_CLR_ALL  &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC       &kp PIPE
+&bt BT_SEL 0                &bt BT_SEL 2  &trans          &trans     &trans                           &trans
+&trans        &trans        &trans    &trans        &trans          &trans     &trans     &trans     &trans           &trans
             >;
         };
     };
