@@ -114,14 +114,6 @@
             key-positions = <28 29>;
             layers = <2>;
         };
-
-        // Layer 0 で G(14) + H(15) 同時押し → ZMK Studio 解錠
-        // （CONFIG_ZMK_STUDIO_LOCKING=y のとき、キーマップ編集前にこれで解錠）
-        studio_unlock_combo {
-            bindings = <&studio_unlock>;
-            key-positions = <14 15>;
-            layers = <0>;
-        };
     };
 
     keymap {
