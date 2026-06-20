@@ -32,13 +32,14 @@
         compatible = "zmk,matrix-transform";
         columns = <10>;  // 左5列 + 右5列
         rows = <5>;      // 5行
-        // 左24キー + 右24キー = 48キー
-        // ROW3のCOL2（左）とCOL7（右）は空き
+        // 左23キー + 右23キー = 46キー
+        // ROW3 は親指クラスター。物理キーが無い位置は空き:
+        //   左 = COL1(ALT横のCTRL) と COL2、右 = COL6(~キー) と COL7
         map = <
             RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)    RC(0,9) RC(0,8) RC(0,7) RC(0,6) RC(0,5)
             RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)    RC(1,9) RC(1,8) RC(1,7) RC(1,6) RC(1,5)
             RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)    RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,5)
-            RC(3,0) RC(3,1)         RC(3,3) RC(3,4)    RC(3,9) RC(3,8)         RC(3,6) RC(3,5)
+            RC(3,0)                 RC(3,3) RC(3,4)    RC(3,9) RC(3,8)                 RC(3,5)
             RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)    RC(4,9) RC(4,8) RC(4,7) RC(4,6) RC(4,5)
         >;
     };
@@ -96,15 +97,14 @@
             , <&key_physical_attrs 100 100 900 200 0 0 0>
             , <&key_physical_attrs 100 100 1000 200 0 0 0>
             , <&key_physical_attrs 100 100 1100 200 0 0 0>
-            // Row 3: 左4キー + 右4キー (COL2/COL7相当は空き)
-            , <&key_physical_attrs 100 100   0 300 0 0 0>
-            , <&key_physical_attrs 100 100 100 300 0 0 0>
-            , <&key_physical_attrs 100 100 300 300 0 0 0>
-            , <&key_physical_attrs 100 100 400 300 0 0 0>
-            , <&key_physical_attrs 100 100 700 300 0 0 0>
-            , <&key_physical_attrs 100 100 800 300 0 0 0>
-            , <&key_physical_attrs 100 100 1000 300 0 0 0>
-            , <&key_physical_attrs 100 100 1100 300 0 0 0>
+            // Row 3: 左3キー + 右3キー（親指クラスター。物理キーのみ）
+            //   左 COL1(X=100)/COL2(X=200)、右 COL6(X=1000)/COL7(X=900) は物理キー無し
+            , <&key_physical_attrs 100 100   0 300 0 0 0>   // RC(3,0)
+            , <&key_physical_attrs 100 100 300 300 0 0 0>   // RC(3,3)
+            , <&key_physical_attrs 100 100 400 300 0 0 0>   // RC(3,4)
+            , <&key_physical_attrs 100 100 700 300 0 0 0>   // RC(3,9)
+            , <&key_physical_attrs 100 100 800 300 0 0 0>   // RC(3,8)
+            , <&key_physical_attrs 100 100 1100 300 0 0 0>  // RC(3,5)
             // Row 4: 左5キー + 右5キー（5方向タクトスイッチ）
             , <&key_physical_attrs 100 100   0 400 0 0 0>
             , <&key_physical_attrs 100 100 100 400 0 0 0>

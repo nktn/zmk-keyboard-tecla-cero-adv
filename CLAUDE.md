@@ -37,12 +37,12 @@ Defines external dependencies from zmkfirmware and sekigon-gonnoc repos:
 - `*.conf` - Kconfig options (ZMK Studio, BLE power, battery monitoring)
 
 ### Keymap (`config/keymap.keymap`)
-Default keymap with 3 layers for 48-key layout. Editable via ZMK Studio (studio feature enabled).
+Default keymap with 3 layers for 46-key layout. Editable via ZMK Studio (studio feature enabled).
 
 ## Hardware Configuration
 
 ### Matrix: 5 rows × 5 columns (per side)
-- Total: 48 mapped keys (ROW3/COL2 is unused on each side)
+- Total: 46 mapped keys (ROW3 has no physical key at COL1/COL2 on the left and COL6/COL7 on the right — thumb cluster is 3 keys per side)
 - ROW0-ROW4, COL0-COL4
 
 ### Trackball

@@ -1,11 +1,11 @@
 /*
  * tecla-cero キーマップ設定
  *
- * 48キー分割キーボード（左24 + 右24）
+ * 46キー分割キーボード（左23 + 右23）
  * 3レイヤー構成
  *
  * 物理構成:
- *   ROW0-2 = アルファ3段、ROW3 = サム行（各側COL2欠番＝8キー）
+ *   ROW0-2 = アルファ3段、ROW3 = サム行（各側3キー＝6キー）
  *   ROW4   = 5方向タクト + マウス/トラックボール操作行（ハード配線依存・変更不可）
  *
  * ZMK Studioでリアルタイム編集可能
@@ -50,10 +50,11 @@
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
          * │ Z │ X │ C │ V │ B │   │ N │ M │ , │ . │ / │
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │Ctl│GUI│   │Alt│SPC│   │ENT│Sft│   │BSP│Ctl│
+         * │GUI│   │   │Alt│SPC│   │ENT│Sft│   │   │C⌫ │
          * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
-         *                   L1            L2
-         * SPC: 長押しでLayer1 / ENT: 長押しでLayer2
+         *                   L1    L2
+         * SPC: 長押しLayer1/タップSpace, ENT: 長押しLayer2/タップEnter
+         * C⌫: 長押しCtrl/タップBackspace（右外側サム）
          *
          * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
          */
@@ -63,7 +64,7 @@
 &kp Q         &kp W      &kp E      &kp R         &kp T            &kp Y         &kp U          &kp I         &kp O          &kp P
 &kp A         &kp S      &kp D      &kp F         &kp G            &kp H         &kp J          &kp K         &kp L          &kp SEMICOLON
 &kp Z         &kp X      &kp C      &kp V         &kp B            &kp N         &kp M          &kp COMMA     &kp DOT        &kp SLASH
-&kp LCTRL     &kp LGUI              &kp LALT      &lt 1 SPACE      &lt 2 ENTER   &kp RSHIFT                   &kp BSPC       &kp RCTRL
+&kp LGUI                  &kp LALT      &lt 1 SPACE      &lt 2 ENTER   &kp RSHIFT                   &mt RCTRL BSPC
 &mkp LCLK     &mkp RCLK  &kp DOWN   &kp LC(UP)    &kp ENTER        &mkp MCLK     &mkp LCLK      &kp LC(LEFT)  &kp LC(RIGHT)  &msc SCRL_DOWN
             >;
         };
@@ -89,7 +90,7 @@
 &kp N1        &kp N2     &kp N3     &kp N4        &kp N5           &kp N6        &kp N7         &kp N8        &kp N9         &kp N0
 &kp TAB       &kp LEFT   &kp DOWN   &kp UP        &kp RIGHT        &kp HOME      &kp PG_DN      &kp PG_UP     &kp END        &kp DEL
 &kp ESC       &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &kp BSPC
-&trans        &trans                &trans        &trans           &trans        &trans                       &trans         &trans
+&trans        &trans        &trans        &trans           &trans        &trans
 &trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
             >;
         };
@@ -104,7 +105,7 @@
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
          * │F6 │F7 │F8 │F9 │F10│   │ _ │ + │ { │ } │ | │
          * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-         * │BT0│BT1│   │BT2│CLR│   │OUT│   │   │   │   │
+         * │BT0│   │   │BT1│BT2│   │CLR│OUT│   │   │   │
          * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
          *
          * BT0-2: BTプロファイル選択 / CLR: 現プロファイル解除 / OUT: USB/BLE切替
@@ -116,7 +117,7 @@
 &kp EXCL      &kp AT     &kp HASH   &kp DLLR      &kp PRCNT        &kp CARET     &kp AMPS       &kp ASTRK     &kp LPAR       &kp RPAR
 &kp F1        &kp F2     &kp F3     &kp F4        &kp F5           &kp MINUS     &kp EQUAL      &kp LBKT      &kp RBKT       &kp BSLH
 &kp F6        &kp F7     &kp F8     &kp F9        &kp F10          &kp UNDER     &kp PLUS       &kp LBRC      &kp RBRC       &kp PIPE
-&bt BT_SEL 0  &bt BT_SEL 1          &bt BT_SEL 2  &bt BT_CLR       &out OUT_TOG  &trans                       &trans         &trans
+&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR       &out OUT_TOG  &trans
 &trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
             >;
         };
