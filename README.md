@@ -1,14 +1,14 @@
 
-# CERO/SP
+# CERO/ADV
 
-TECLA-CERO/SP 分割キーボード用のZMKファームウェア
+TECLA-CERO/Adv 分割キーボード用のZMKファームウェア
 
 ## 特徴
 
-- キーマトリクスは5行 × 5列 × 2側
-- 実入力数は片側24、左右合計48（ROW3/COL2相当は左右とも空き）
+- キーマトリクスは5行 × 4列 × 2側
+- 実入力数は片側23、左右合計46
 - 左右両側にトラックボール（PAW3222）搭載
-- ROW4に5方向タクトスイッチを接続
+- 5方向タクトスイッチ搭載
 - BMP Boost使用
 - BLE/USB両対応
 - ZMK Studio対応（キーマップをリアルタイム編集可能）
@@ -17,6 +17,8 @@ TECLA-CERO/SP 分割キーボード用のZMKファームウェア
 ## ビルド
 
 GitHub Actionsで自動ビルドされます。pushするとビルドが実行され、Artifactsからuf2ファイルをダウンロードできます。
+
+このブランチは dya studio 対応版です。標準構成で運用する場合は [mainブランチ](https://github.com/nktn/zmk-keyboard-tecla-cero-adv/tree/main) を使ってください。
 
 ### ビルドアーティファクト
 
@@ -41,11 +43,11 @@ GitHub Actionsで自動ビルドされます。pushするとビルドが実行�
 
 - 右トラックボール: 右側セントラルでローカル入力
 - 左トラックボール: split inputとして右側セントラルへ転送
-- ミニトラックパッド: `with_trackpad` 構成のみ有効、スクロール入力として使用
+- ミニトラックパッド: `with_trackpad` 構成のみ有効、スクロール入力として使用。利用する場合はbmp_boost_extender_miniの基板を経由してミニトラックパッドを利用してください。
 
-## ROW4 仮キーマップ
+## ５方向タクトスイッチ
 
-動作確認用に、ROW4へ以下を割り当てています。
+動作確認用に以下を割り当てています。
 
 | 左側5方向 | 右側5方向 |
 |-----------|-----------|
@@ -53,5 +55,4 @@ GitHub Actionsで自動ビルドされます。pushするとビルドが実行�
 
 ## キーマップ編集
 
-- [ZMK Studio](https://zmk.studio/)でリアルタイム編集可能
-- `config/keymap.keymap`を直接編集してpushすることも可能
+- [DYA Studio](https://studio.dya.cormoran.works/)でリアルタイム編集可能
