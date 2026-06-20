@@ -1,0 +1,14 @@
+/*
+ * tecla-cero 右側オーバーレイ設定
+ *
+ * 右側固有の設定を記述
+ * - 列オフセット: 5（右側のCOL0-4をCOL5-9にマッピング）
+ */
+
+#include "tecla_cero_adv.dtsi"
+
+// 右側のキーマトリクス列オフセット
+// 右側のCOL0-4を論理的にCOL5-9として扱う
+&default_transform {
+    col-offset = <5>;
+};

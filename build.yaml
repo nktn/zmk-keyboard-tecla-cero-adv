@@ -1,0 +1,28 @@
+include:
+  # === 右 central（固定）===
+  # 右側トラックパッドあり（標準構成）
+  - board: bmp_boost
+    shield: tecla_cero_right
+    snippet: "studio-rpc-usb-uart split-central input-trackball input-trackpad-mini input-trackpad-mini-listener input-listener input-split-listener input-trackpad-mini-split-listener"
+    artifact-name: tecla_cero_right_central_with_trackpad
+  # 右側トラックパッドなし
+  - board: bmp_boost
+    shield: tecla_cero_right
+    snippet: "studio-rpc-usb-uart split-central input-trackball input-listener input-split-listener input-trackpad-mini-split-listener"
+    artifact-name: tecla_cero_right_central_no_trackpad
+
+  # === 左 peripheral（固定）===
+  # 左側トラックパッドなし
+  - board: bmp_boost
+    shield: tecla_cero_left
+    snippet: "studio-rpc-usb-uart input-trackball input-split"
+    artifact-name: tecla_cero_left_peripheral_no_trackpad
+  # 左側トラックパッドあり
+  - board: bmp_boost
+    shield: tecla_cero_left
+    snippet: "studio-rpc-usb-uart input-trackball input-split input-trackpad-mini input-trackpad-mini-split"
+    artifact-name: tecla_cero_left_peripheral_with_trackpad
+
+  # === 共通 ===
+  - board: bmp_boost
+    shield: settings_reset

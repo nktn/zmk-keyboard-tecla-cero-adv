@@ -1,0 +1,11 @@
+# tecla-cero シールド定義
+#
+# ビルドシステムがシールドを認識するための設定
+
+# 左側シールドの定義
+config SHIELD_TECLA_CERO_LEFT
+    def_bool $(shields_list_contains,tecla_cero_left)
+
+# 右側シールドの定義
+config SHIELD_TECLA_CERO_RIGHT
+    def_bool $(shields_list_contains,tecla_cero_right)

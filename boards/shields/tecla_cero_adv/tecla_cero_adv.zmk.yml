@@ -1,0 +1,23 @@
+# tecla-cero シールド メタデータ
+#
+# ZMKビルドシステムとZMK Studioが使用する情報
+
+file_format: "1"
+id: tecla_cero_adv
+name: tecla-cero
+type: shield
+
+# サポートする機能
+features:
+  - keys      # キーボード機能
+  - studio    # ZMK Studio対応
+
+# 出力インターフェース
+outputs:
+  - usb       # USB接続
+  - ble       # Bluetooth接続
+
+# 分割キーボードの左右シールド
+siblings:
+  - tecla_cero_left
+  - tecla_cero_right

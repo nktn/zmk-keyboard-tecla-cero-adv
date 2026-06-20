@@ -1,0 +1,32 @@
+#include <dt-bindings/input/input-event-codes.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        pointing_device_split: pointing_device_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    /*
+     * 左トラックボール（split 経由）のリスナー
+     * 左側は縦スクロール専用（横方向は無効）
+     * - zip_x_scaler 0 1 で X 軸を 0 倍にして横移動を除去
+     * - zip_xy_to_scroll_mapper で残った Y 軸を縦ホイールに変換
+     * - zip_scroll_scaler 1 24 でスクロール量を 1/24 に減速
+     */
+    pointing_device_split_listener: pointing_device_split_listener {
+        compatible = "zmk,input-listener";
+        device = <&pointing_device_split>;
+        status = "okay";
+        input-processors = <&typing_suppress>,
+                           <&zip_x_scaler 0 1>,
+                           <&zip_xy_to_scroll_mapper>,
+                           <&zip_scroll_scaler 1 24>;
+    };
+};

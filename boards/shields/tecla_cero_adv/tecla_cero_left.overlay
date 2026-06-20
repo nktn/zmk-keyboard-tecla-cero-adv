@@ -1,0 +1,60 @@
+/*
+ * tecla-cero 左側オーバーレイ設定
+ *
+ * 左側固有の設定を記述
+ * - トラックボール: 有効（PAW3222 / SPI0）
+ * - Extender-Mini経由の追加トラックボール（PAW3222 / SPIM3）
+ *   ※ nRF52 のインスタンス1（SPI1/I2C1等）は他周辺機器と共有のため、
+ *     高速SPI専用の SPIM3（インスタンス共有なし）を使用してピン17/21/31/29/24を割り当て。
+ *   ※ input-trackpad-mini と同じピンを共有するため排他利用。
+ *     ext-trackball を使うときは no_trackpad 系のビルドを選択する。
+ */
+
+#include "tecla_cero_adv.dtsi"
+
+/ {
+    // Extender-Mini経由トラックボール用リスナー（Centralで動作）
+    pointing_device_ext_listener: pointing_device_ext_listener {
+        compatible = "zmk,input-listener";
+        device = <&pointing_device_ext>;
+        status = "okay";
+    };
+};
+
+&pinctrl {
+    // Extender-Mini経由トラックボール用 SPIM3 ピン設定
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 17)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 21)>,
+                <NRF_PSEL(SPIM_MISO, 0, 21)>;
+        };
+    };
+
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 17)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 21)>,
+                <NRF_PSEL(SPIM_MISO, 0, 21)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi3 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 31 GPIO_ACTIVE_LOW>;
+
+    pointing_device_ext: pointing_device_ext@0 {
+        status = "okay";
+        compatible = "pixart,paw3222";
+        reg = <0>;
+        spi-max-frequency = <2000000>;
+        irq-gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
+        power-gpios = <&gpio0 24 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H1)>;
+    };
+};

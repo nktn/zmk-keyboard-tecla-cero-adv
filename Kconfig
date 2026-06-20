@@ -1,0 +1,8 @@
+config ZMK_INPUT_PROCESSOR_TYPING_SUPPRESS
+    bool "Typing Suppress Input Processor"
+    default y
+    depends on ZMK_POINTING
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TYPING_SUPPRESS_ENABLED
+    help
+      Drops pointing-device events for require-prior-idle-ms after the
+      last key press, preventing accidental cursor movement while typing.

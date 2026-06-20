@@ -1,0 +1,10 @@
+if(CONFIG_SHIELD_TECLA_CERO_LEFT OR CONFIG_SHIELD_TECLA_CERO_RIGHT)
+  zephyr_library()
+  zephyr_include_directories(${APPLICATION_SOURCE_DIR}/include)
+  zephyr_library_sources(src/board.c)
+  if(CONFIG_IQS7211E)
+    zephyr_library_sources(src/mini_trackpad_init_reg.c)
+  endif()
+  zephyr_library_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_TYPING_SUPPRESS
+    src/input_processor_typing_suppress.c)
+endif()

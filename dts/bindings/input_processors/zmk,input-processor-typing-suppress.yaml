@@ -1,0 +1,24 @@
+description: |
+  キータイプ中ポインタ抑制 Input Processor。
+  直近のキー押下から require-prior-idle-ms 経過するまでの間、
+  ポインティングデバイス（トラックボール等）の入力イベントを破棄する。
+
+compatible: "zmk,input-processor-typing-suppress"
+
+properties:
+  "#input-processor-cells":
+    type: int
+    required: true
+    const: 0
+  require-prior-idle-ms:
+    type: int
+    required: false
+    default: 150
+    description: |
+      直近のキー押下から N ms 経過するまでは入力イベントを破棄する。
+  track-remainders:
+    type: boolean
+    description: |
+      Required by zmk,input-listener for every chained processor.
+      This processor only drops or passes events, so it never needs a
+      remainder slot — leave unset.

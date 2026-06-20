@@ -1,0 +1,18 @@
+if SHIELD_TECLA_CERO_LEFT || SHIELD_TECLA_CERO_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "cero-adv"
+
+config ZMK_SPLIT
+    default y
+
+config SPI
+    default y
+
+config INPUT
+    default y
+
+config ZMK_MOUSE
+    default y
+
+endif

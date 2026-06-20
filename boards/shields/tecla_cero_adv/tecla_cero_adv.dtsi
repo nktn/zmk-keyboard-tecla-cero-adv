@@ -1,0 +1,271 @@
+/*
+ * tecla-cero キーボード メインデバイスツリー設定
+ *
+ * 48キー分割キーボード（左24 + 右24）
+ * - 左右両側: トラックボール（PAW3222）搭載
+ * - ROW4: 5方向タクトスイッチ
+ * - ボード: BMP Boost (nRF52840)
+ */
+
+#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
+#include <dt-bindings/input/input-event-codes.h>
+
+/ {
+    /*
+     * ZMKが使用するデバイスの選択
+     */
+    chosen {
+        zmk,physical-layout = &physical_layout;  // 物理レイアウト
+        zmk,kscan = &kscan0;                     // キースキャンデバイス
+        zmk,battery = &non_lipo_battery;         // バッテリー監視デバイス
+    };
+
+    /*
+     * キーマトリクス変換設定
+     * 物理的なROW/COL位置からキーマップのインデックスへ変換
+     */
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <10>;  // 左5列 + 右5列
+        rows = <5>;      // 5行
+        // 左24キー + 右24キー = 48キー
+        // ROW3のCOL2（左）とCOL7（右）は空き
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)    RC(0,9) RC(0,8) RC(0,7) RC(0,6) RC(0,5)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)    RC(1,9) RC(1,8) RC(1,7) RC(1,6) RC(1,5)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)    RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,5)
+            RC(3,0) RC(3,1)         RC(3,3) RC(3,4)    RC(3,9) RC(3,8)         RC(3,6) RC(3,5)
+            RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)    RC(4,9) RC(4,8) RC(4,7) RC(4,6) RC(4,5)
+        >;
+    };
+
+    /*
+     * 物理レイアウト設定
+     * ZMK Studioで表示されるレイアウト名など
+     */
+    physical_layout: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "Default";
+        kscan = <&kscan0>;
+        transform = <&default_transform>;
+
+        /*
+         * キーの物理位置 (ZMK Studio用)
+         * <&key_physical_attrs 幅 高さ X Y 回転 回転原点X 回転原点Y>
+         * 単位: centi-unit (100 = 1u), centi-degree
+         * 順序はmatrix transformのmap順に対応
+         *
+         * 左5列 + 右5列、5行、48キー
+         * Row3はCOL2(左)とCOL7相当(右)が空き
+         */
+        keys
+            // Row 0: 左5キー + 右5キー
+            = <&key_physical_attrs 100 100   0   0 0 0 0>
+            , <&key_physical_attrs 100 100 100   0 0 0 0>
+            , <&key_physical_attrs 100 100 200   0 0 0 0>
+            , <&key_physical_attrs 100 100 300   0 0 0 0>
+            , <&key_physical_attrs 100 100 400   0 0 0 0>
+            , <&key_physical_attrs 100 100 700   0 0 0 0>
+            , <&key_physical_attrs 100 100 800   0 0 0 0>
+            , <&key_physical_attrs 100 100 900   0 0 0 0>
+            , <&key_physical_attrs 100 100 1000  0 0 0 0>
+            , <&key_physical_attrs 100 100 1100  0 0 0 0>
+            // Row 1: 左5キー + 右5キー
+            , <&key_physical_attrs 100 100   0 100 0 0 0>
+            , <&key_physical_attrs 100 100 100 100 0 0 0>
+            , <&key_physical_attrs 100 100 200 100 0 0 0>
+            , <&key_physical_attrs 100 100 300 100 0 0 0>
+            , <&key_physical_attrs 100 100 400 100 0 0 0>
+            , <&key_physical_attrs 100 100 700 100 0 0 0>
+            , <&key_physical_attrs 100 100 800 100 0 0 0>
+            , <&key_physical_attrs 100 100 900 100 0 0 0>
+            , <&key_physical_attrs 100 100 1000 100 0 0 0>
+            , <&key_physical_attrs 100 100 1100 100 0 0 0>
+            // Row 2: 左5キー + 右5キー
+            , <&key_physical_attrs 100 100   0 200 0 0 0>
+            , <&key_physical_attrs 100 100 100 200 0 0 0>
+            , <&key_physical_attrs 100 100 200 200 0 0 0>
+            , <&key_physical_attrs 100 100 300 200 0 0 0>
+            , <&key_physical_attrs 100 100 400 200 0 0 0>
+            , <&key_physical_attrs 100 100 700 200 0 0 0>
+            , <&key_physical_attrs 100 100 800 200 0 0 0>
+            , <&key_physical_attrs 100 100 900 200 0 0 0>
+            , <&key_physical_attrs 100 100 1000 200 0 0 0>
+            , <&key_physical_attrs 100 100 1100 200 0 0 0>
+            // Row 3: 左4キー + 右4キー (COL2/COL7相当は空き)
+            , <&key_physical_attrs 100 100   0 300 0 0 0>
+            , <&key_physical_attrs 100 100 100 300 0 0 0>
+            , <&key_physical_attrs 100 100 300 300 0 0 0>
+            , <&key_physical_attrs 100 100 400 300 0 0 0>
+            , <&key_physical_attrs 100 100 700 300 0 0 0>
+            , <&key_physical_attrs 100 100 800 300 0 0 0>
+            , <&key_physical_attrs 100 100 1000 300 0 0 0>
+            , <&key_physical_attrs 100 100 1100 300 0 0 0>
+            // Row 4: 左5キー + 右5キー（5方向タクトスイッチ）
+            , <&key_physical_attrs 100 100   0 400 0 0 0>
+            , <&key_physical_attrs 100 100 100 400 0 0 0>
+            , <&key_physical_attrs 100 100 200 400 0 0 0>
+            , <&key_physical_attrs 100 100 300 400 0 0 0>
+            , <&key_physical_attrs 100 100 400 400 0 0 0>
+            , <&key_physical_attrs 100 100 700 400 0 0 0>
+            , <&key_physical_attrs 100 100 800 400 0 0 0>
+            , <&key_physical_attrs 100 100 900 400 0 0 0>
+            , <&key_physical_attrs 100 100 1000 400 0 0 0>
+            , <&key_physical_attrs 100 100 1100 400 0 0 0>
+            ;
+    };
+
+    /*
+     * キースキャン（キーマトリクス）設定
+     * GPIOピンの割り当てとスキャン方式
+     */
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+
+        // 列（COL）のGPIOピン設定
+        // COLはスキャン出力、PULL_DOWNで待機
+        col-gpios
+            = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // COL0
+            , <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // COL1
+            , <&gpio0 23 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // COL2
+            , <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // COL3
+            , <&gpio1 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // COL4
+            ;
+
+        // 行（ROW）のGPIOピン設定
+        // ROWはスキャン入力
+        row-gpios
+            = <&gpio0 5  (GPIO_ACTIVE_HIGH)>  // ROW0
+            , <&gpio0 0  (GPIO_ACTIVE_HIGH)>  // ROW1
+            , <&gpio0 30 (GPIO_ACTIVE_HIGH)>  // ROW2
+            , <&gpio0 3  (GPIO_ACTIVE_HIGH)>  // ROW3
+            , <&gpio1 14 (GPIO_ACTIVE_HIGH)>  // ROW4
+            ;
+
+        debounce-press-ms = <15>;    // 押下時デバウンス（デフォルト5ms）
+        debounce-release-ms = <15>;  // リリース時デバウンス（デフォルト5ms）
+
+        wakeup-source;  // スリープからの復帰トリガーとして使用
+    };
+
+    /*
+     * ステータスLED設定
+     * BMP Boostの内蔵LED
+     */
+    leds {
+        compatible = "gpio-leds";
+        status_led: status_led {
+            gpios = <&bmp 2 GPIO_ACTIVE_HIGH>;
+            label = "Status LED";
+        };
+    };
+
+    // ZMKステータスLEDデバイス（BLE接続状態などを表示）
+    status_led_device: status_led_device {
+        compatible = "zmk,status-led";
+        led = <&status_led>;
+    };
+
+    /*
+     * ブートローダートリガー設定
+     * USB CDC ACM経由でブートローダーモードに入れるようにする
+     */
+    bootloader_trigger: bootloader_trigger {
+        compatible = "zmk,cdc-acm-bootloader-trigger";
+    };
+
+    /*
+     * タイピング中ポインタ抑制
+     * 直近キー押下から require-prior-idle-ms 経過するまでポインタ入力を破棄
+     */
+    typing_suppress: typing_suppress {
+        compatible = "zmk,input-processor-typing-suppress";
+        #input-processor-cells = <0>;
+        require-prior-idle-ms = <400>;
+    };
+
+    /*
+     * トラックボール → スクロール変換
+     * X 軸を横スクロール、Y 軸を縦スクロールにマップ
+     */
+    tb_to_scroll: tb_to_scroll {
+        compatible = "zmk,input-processor-code-mapper";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        map = <INPUT_REL_X INPUT_REL_HWHEEL>,
+              <INPUT_REL_Y INPUT_REL_WHEEL>;
+    };
+
+    /*
+     * ポインティングデバイス入力リスナー
+     * デフォルトは無効、input-listenerスニペットで有効化
+     * 全レイヤーでカーソル移動（スクロールはタクトスイッチに割当）
+     */
+    pointing_listener: pointing_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        input-processors = <&typing_suppress>,
+                           <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+    };
+
+    /*
+     * バッテリー監視設定
+     * デフォルトのLiPoバッテリー監視を無効化
+     */
+    vbatt: vbatt {
+        status = "disabled";
+    };
+
+    // 非LiPoバッテリー（単4電池など）用の監視設定
+    non_lipo_battery: non_lipo_battery {
+        compatible = "zmk,non-lipo-battery";
+        io-channels = <&adc 4>;  // ADCチャンネル4でバッテリー電圧を読み取り
+    };
+
+};
+
+/*
+ * SPI ピン制御設定（トラックボール用）
+ * SPI0バスの有効化はinput-trackballスニペットで行う
+ */
+&pinctrl {
+    // 通常動作時のSPIピン設定
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 18)>,   // SCLK: GPIO 18
+                <NRF_PSEL(SPIM_MOSI, 0, 16)>,      // SDIO: GPIO 16（MOSI/MISO共有）
+                <NRF_PSEL(SPIM_MISO, 0, 16)>;
+        };
+    };
+
+    // スリープ時のSPIピン設定（省電力）
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 18)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 16)>,
+                <NRF_PSEL(SPIM_MISO, 0, 16)>;
+            low-power-enable;
+        };
+    };
+
+    // I2C1ピン設定（BMP Boost Extender Mini経由のミニトラックパッド用）
+    i2c1_default: i2c1_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 21)>;
+            bias-pull-up;
+        };
+    };
+    i2c1_sleep: i2c1_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 21)>;
+            bias-pull-up;
+            low-power-enable;
+        };
+    };
+};

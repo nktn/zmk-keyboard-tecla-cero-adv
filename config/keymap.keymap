@@ -1,0 +1,124 @@
+/*
+ * tecla-cero キーマップ設定
+ *
+ * 48キー分割キーボード（左24 + 右24）
+ * 3レイヤー構成
+ *
+ * 物理構成:
+ *   ROW0-2 = アルファ3段、ROW3 = サム行（各側COL2欠番＝8キー）
+ *   ROW4   = 5方向タクト + マウス/トラックボール操作行（ハード配線依存・変更不可）
+ *
+ * ZMK Studioでリアルタイム編集可能
+ */
+
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 200
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
+
+/ {
+    /*
+     * コンボ設定
+     * 複数キー同時押しで特殊動作
+     */
+
+    combos {
+        compatible = "zmk,combos";
+
+        // Layer 2でキー28+29同時押し → Bluetoothペアリング解除
+
+        bt_clear {
+            bindings = <&bt BT_CLR>;
+            key-positions = <28 29>;
+            layers = <2>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        /*
+         * Layer 0: デフォルト（QWERTY）
+         *
+         * ┌───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┐
+         * │ Q │ W │ E │ R │ T │   │ Y │ U │ I │ O │ P │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │ A │ S │ D │ F │ G │   │ H │ J │ K │ L │ ; │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │ Z │ X │ C │ V │ B │   │ N │ M │ , │ . │ / │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │Ctl│GUI│   │Alt│SPC│   │ENT│Sft│   │BSP│Ctl│
+         * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
+         *                   L1            L2
+         * SPC: 長押しでLayer1 / ENT: 長押しでLayer2
+         *
+         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
+         */
+
+        layer_0 {
+            bindings = <
+&kp Q         &kp W      &kp E      &kp R         &kp T            &kp Y         &kp U          &kp I         &kp O          &kp P
+&kp A         &kp S      &kp D      &kp F         &kp G            &kp H         &kp J          &kp K         &kp L          &kp SEMICOLON
+&kp Z         &kp X      &kp C      &kp V         &kp B            &kp N         &kp M          &kp COMMA     &kp DOT        &kp SLASH
+&kp LCTRL     &kp LGUI              &kp LALT      &lt 1 SPACE      &lt 2 ENTER   &kp RSHIFT                   &kp BSPC       &kp RCTRL
+&mkp LCLK     &mkp RCLK  &kp DOWN   &kp LC(UP)    &kp ENTER        &mkp MCLK     &mkp LCLK      &kp LC(LEFT)  &kp LC(RIGHT)  &msc SCRL_DOWN
+            >;
+        };
+
+        /*
+         * Layer 1: 数字・ナビゲーション
+         *
+         * ┌───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┐
+         * │ 1 │ 2 │ 3 │ 4 │ 5 │   │ 6 │ 7 │ 8 │ 9 │ 0 │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │TAB│ ← │ ↓ │ ↑ │ → │   │Hom│PgD│PgU│End│DEL│
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │ESC│   │   │   │   │   │   │   │   │   │BSP│
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │   │   │   │▓▓▓│   │   │   │   │   │   │   │
+         * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
+         *
+         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
+         */
+
+        layer_1 {
+            bindings = <
+&kp N1        &kp N2     &kp N3     &kp N4        &kp N5           &kp N6        &kp N7         &kp N8        &kp N9         &kp N0
+&kp TAB       &kp LEFT   &kp DOWN   &kp UP        &kp RIGHT        &kp HOME      &kp PG_DN      &kp PG_UP     &kp END        &kp DEL
+&kp ESC       &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &kp BSPC
+&trans        &trans                &trans        &trans           &trans        &trans                       &trans         &trans
+&trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
+            >;
+        };
+
+        /*
+         * Layer 2: 記号・ファンクション・Bluetooth
+         *
+         * ┌───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┐
+         * │ ! │ @ │ # │ $ │ % │   │ ^ │ & │ * │ ( │ ) │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │F1 │F2 │F3 │F4 │F5 │   │ - │ = │ [ │ ] │ \ │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │F6 │F7 │F8 │F9 │F10│   │ _ │ + │ { │ } │ | │
+         * ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+         * │BT0│BT1│   │BT2│CLR│   │OUT│   │   │   │   │
+         * └───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┘
+         *
+         * BT0-2: BTプロファイル選択 / CLR: 現プロファイル解除 / OUT: USB/BLE切替
+         * ROW4（タクト/マウス行）は変更しないこと（ハード配線依存）
+         */
+
+        layer_2 {
+            bindings = <
+&kp EXCL      &kp AT     &kp HASH   &kp DLLR      &kp PRCNT        &kp CARET     &kp AMPS       &kp ASTRK     &kp LPAR       &kp RPAR
+&kp F1        &kp F2     &kp F3     &kp F4        &kp F5           &kp MINUS     &kp EQUAL      &kp LBKT      &kp RBKT       &kp BSLH
+&kp F6        &kp F7     &kp F8     &kp F9        &kp F10          &kp UNDER     &kp PLUS       &kp LBRC      &kp RBRC       &kp PIPE
+&bt BT_SEL 0  &bt BT_SEL 1          &bt BT_SEL 2  &bt BT_CLR       &out OUT_TOG  &trans                       &trans         &trans
+&trans        &trans     &trans     &trans        &trans           &trans        &trans         &trans        &trans         &trans
+            >;
+        };
+    };
+};

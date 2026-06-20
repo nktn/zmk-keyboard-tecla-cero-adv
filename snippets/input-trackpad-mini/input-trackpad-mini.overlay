@@ -1,0 +1,27 @@
+/ {
+    trackpad_mini_listener: trackpad_mini_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackpad_mini>;
+        status = "okay";
+    };
+};
+
+&i2c1 {
+    status = "okay";
+    compatible = "nordic,nrf-twim";
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-1 = <&i2c1_sleep>;
+    pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    zephyr,concat-buf-size = <32>;
+
+    trackpad_mini: trackpad_mini@56 {
+        status = "okay";
+        compatible = "azoteq,iqs7211e";
+        reg = <0x56>;
+        irq-gpios = <&gpio0 31 (GPIO_PULL_UP)>;
+        power-gpios = <&gpio0 24 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H1)>;
+        init-symbol = "mini_trackpad_iqs7211e_init";
+        init-length = <217>;
+    };
+};
