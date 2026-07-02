@@ -27,23 +27,31 @@ manifest:
     - name: zmk-module-runtime-input-processor
       remote: nktn
       revision: 80bb24984eda41b796d080df16f6f7c084aed04d
+    # sekigon-gonnoc 各モジュールも再現性・改ざん検知のため固定SHAで取得する。
+    # 各SHAは 2026-07-02 時点の各ブランチ先頭。上流の更新を取り込むときは
+    # `git ls-remote https://github.com/sekigon-gonnoc/<repo> refs/heads/<branch>`
+    # で新しいSHAを確認し、差分レビューの上で手動で上げる。
+    # ※ v0.2 はタグではなくブランチ名（refs/heads/v0.2）なので注意。
     - name: zmk-component-bmp-boost
       remote: sekigon-gonnoc
       import: west.yml
-      revision: v0.2
+      revision: 8b15ecbb43efe9095e21f5b26fef157faa816f6b # v0.2 ブランチ
     - name: zmk-feature-status-led
       remote: sekigon-gonnoc
-      revision: main
+      revision: df1e324082c23c748c9ac377a9204535a470b734 # main ブランチ
     - name: zmk-driver-paw3222
       remote: sekigon-gonnoc
-      revision: torabo-tsuki
+      revision: 0e1835c57f88d215ce401b6d0901f361629621fc # torabo-tsuki ブランチ
     - name: zmk-feature-cdc-acm-bootloader-trigger
       remote: sekigon-gonnoc
-      revision: v0.2
+      revision: 3fc210f840433bb9204a510f3a2c78b4fa11482f # v0.2 ブランチ
+    # bmp-boost の west.yml からも main 参照で import されるが、トップレベルの
+    # 本 manifest の定義が優先されるため、ここでの固定が有効になる。
     - name: zmk-feature-non-lipo-battery-management
       remote: sekigon-gonnoc
-      revision: main
+      revision: aa5b958ec6497f6057a1dfce5e731396aaf88374 # main ブランチ
     - name: zmk-driver-iqs7211e
       remote: sekigon-gonnoc
+      revision: 436d3c42172abf812ec104521f29384fc02fc50e # master ブランチ
   self:
     path: config
